@@ -1,0 +1,53 @@
+[project]
+name = "hayam-marketplace"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "Django>=5.2,<5.3", "djangorestframework>=3.18.2,<4",
+  "psycopg[binary]>=3.2,<4", "redis>=5,<7", "celery>=5.5,<6",
+  "Pillow>=13,<14", "gunicorn>=23,<24; sys_platform != 'win32'",
+  "sentry-sdk[django]>=2,<3", "whitenoise>=6.9,<7",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8,<10", "pytest-django>=4.11,<5", "pytest-cov>=6,<8",
+  "factory-boy>=3.3,<4", "ruff>=0.11,<1", "black>=25,<27",
+  "mypy>=1.15,<2", "django-stubs[compatible-mypy]>=5.2,<5.3",
+  "djangorestframework-stubs>=3.16,<4", "types-requests",
+  "bandit>=1.8,<2", "pip-audit>=2.9,<3", "pre-commit>=4,<5",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+testpaths = ["tests"]
+addopts = "--strict-markers --cov=store --cov=config --cov-report=term-missing --cov-fail-under=85"
+
+[tool.coverage.run]
+omit = ["*/migrations/*", "config/asgi.py", "config/wsgi.py", "config/settings/*", "*/management/commands/*"]
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+check_untyped_defs = true
+disallow_untyped_defs = true
+exclude = ["migrations", ".venv"]
+
+[tool.django-stubs]
+django_settings_module = "config.settings.test"
+
+[[tool.mypy.overrides]]
+module = ["celery", "celery.*"]
+ignore_missing_imports = true
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]
