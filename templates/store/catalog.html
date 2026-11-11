@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="bg-rose-100 rounded-3xl p-8 md:p-12 mb-10">
+  <p class="text-sm text-rose-900 mb-3">كل يوم، على ذوقك</p>
+  <h1 class="text-4xl md:text-5xl font-bold mb-4">راحتك حلوة عليكي</h1>
+  <p class="text-stone-700 max-w-xl leading-8">عبايات، إسدالات ولبس بيت تختاريهم براحتك. شوفي المقاسات والألوان المتاحة، واطلبي لحد باب البيت.</p>
+  <a href="#collection" class="button inline-block mt-6">شوفي المجموعة</a>
+</section>
+<section id="collection" aria-labelledby="collection-title">
+<div class="flex items-center justify-between mb-6"><h2 id="collection-title" class="text-2xl font-bold">اختيارات هيام</h2><span class="text-stone-600">تفاصيل بسيطة، إحساس مختلف</span></div>
+<form method="get" action="{% url 'catalog' %}" hx-get="{% url 'catalog' %}" hx-target="#product-grid" hx-swap="outerHTML" hx-push-url="true" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+  <div><label for="q">بتدوري على إيه؟</label><input id="q" name="q" value="{{ q }}" maxlength="100" placeholder="عباية، إسدال..."></div>
+  <div><label for="category">القسم</label><select id="category" name="category"><option value="">كل الأقسام</option>{% for category in categories %}<option value="{{ category.slug }}" {% if request.GET.category == category.slug %}selected{% endif %}>{{ category.name }}</option>{% endfor %}</select></div>
+  <div><label for="size">المقاس</label><input id="size" name="size" value="{{ request.GET.size }}" maxlength="30" placeholder="XL"></div>
+  <div><label for="color">اللون</label><input id="color" name="color" value="{{ request.GET.color }}" maxlength="50" placeholder="أسود"></div>
+  <div><label for="min_price">السعر من</label><input id="min_price" name="min_price" type="number" min="0" step="0.01" value="{{ request.GET.min_price }}"></div>
+  <div><label for="max_price">السعر لحد</label><input id="max_price" name="max_price" type="number" min="0" step="0.01" value="{{ request.GET.max_price }}"></div>
+  <button class="button self-end" type="submit">اعرضي المنتجات</button>
+  <a href="{% url 'catalog' %}" class="self-end p-3 underline">مسح الفلاتر</a>
+</form>
+{% if filter_error %}<p role="alert">{{ filter_error }}</p>{% endif %}
+{% include 'store/product_grid.html' %}
+</section>{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% load l10n %}
+{% block title %}{{ product.name }} | هيام{% endblock %}
+{% block og_title %}{{ product.name }} | هيام{% endblock %}
+{% block content %}
+<a href="{% url 'catalog' %}" class="underline">ارجعي للمجموعة</a>
+<article class="grid md:grid-cols-2 gap-10 mt-6">
+<div class="grid gap-4">{% for image in product.images.all %}<img src="{{ image.image.url }}" alt="{{ image.alt }}" width="800" height="1000" class="rounded-2xl w-full" {% if not forloop.first %}loading="lazy"{% endif %}>{% empty %}<div class="bg-rose-100 rounded-2xl aspect-[4/5] flex items-center justify-center text-4xl">هيام</div>{% endfor %}</div>
+<div><p class="text-stone-500">{{ product.category.name }}</p><h1 class="text-3xl font-bold mt-3">{{ product.name }}</h1><p class="leading-8 my-6 whitespace-pre-line">{{ product.description }}</p>
+<form action="{% url 'cart-update' %}" method="post">{% csrf_token %}
+<label for="variant">اختاري المقاس واللون</label><select id="variant" name="variant" required>{% for variant in variants %}<option value="{{ variant.pk }}" {% if not variant.stock %}disabled{% endif %}>{{ variant.size }} / {{ variant.color }} — {{ variant.price|unlocalize }} ج.م {% if not variant.stock %}(خلصان){% else %}(متاح {{ variant.stock }}){% endif %}</option>{% endfor %}</select>
+<label for="quantity" class="mt-4 block">العدد</label><input id="quantity" type="number" name="quantity" value="1" min="1" max="10" required>
+<button type="submit" class="button w-full mt-6">ضيفي للشنطة</button></form><p class="text-sm text-stone-600 mt-5">السعر والتوفر بيتأكدوا وقت الطلب. الدفع عند الاستلام.</p></div>
+</article>
+<script type="application/ld+json">{{ structured_data|safe }}</script>
+{% endblock %}

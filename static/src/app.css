@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@source "../../templates";
+@layer base {
+  body { font-family: Tahoma, Arial, sans-serif; }
+  label { display: block; margin-bottom: .4rem; font-size: .9rem; }
+  input, select, textarea { width: 100%; border: 1px solid #a8a29e; background: white; border-radius: .7rem; padding: .7rem; }
+  input[type=hidden] { display: none; }
+  a, button { touch-action: manipulation; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid #9f1239; outline-offset: 4px; }
+  .errorlist { color: #9f1239; margin: .6rem 0; }
+}
+@layer components {
+  .button { background: #881337; color: white; border-radius: .75rem; padding: .8rem 1.4rem; text-align: center; }
+  .skip-link { position: absolute; top: -100px; background: white; padding: 1rem; z-index: 10; }
+  .skip-link:focus { top: 0; }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "hayam-marketplace-assets",
+  "private": true,
+  "scripts": {
+    "build": "tailwindcss -i static/src/app.css -o static/app.css --minify && node scripts/copy-htmx.cjs"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.0",
+    "htmx.org": "^2.0.8"
+  }
+}
