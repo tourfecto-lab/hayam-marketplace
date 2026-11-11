@@ -1,0 +1,54 @@
+name: Phase quality gate
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: hayam
+          POSTGRES_USER: hayam
+          POSTGRES_PASSWORD: ci-only-password
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U hayam -d hayam"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_POSTGRES: "1"
+      POSTGRES_PASSWORD: ci-only-password
+      DJANGO_SETTINGS_MODULE: config.settings.test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.13.6"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: uv sync --frozen --python 3.12
+      - run: npm ci && npm run build
+      - run: uv run ruff check .
+      - run: uv run black --check .
+      - run: uv run mypy config store tests manage.py
+      - run: uv run bandit -r config store manage.py -c pyproject.toml
+      - run: uv run pip-audit
+      - run: npm audit --audit-level=high
+      - run: uv run python manage.py makemigrations --check --dry-run
+      - run: uv run pytest --cov-report=xml --junitxml=tests.xml
+      - name: Production deployment checks
+        run: |
+          export DJANGO_SETTINGS_MODULE=config.settings.production
+          export DJANGO_SECRET_KEY=$(uv run python -c 'import secrets; print(secrets.token_urlsafe(64))')
+          uv run python manage.py check --deploy --fail-level WARNING
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: |
+            coverage.xml
+            tests.xml
+      - run: docker build -t hayam-marketplace:ci .

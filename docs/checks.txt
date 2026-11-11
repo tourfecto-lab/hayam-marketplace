@@ -1,0 +1,93 @@
+Local Phase 1 quality checks, 2026-11-11
+> ruff check .
+All checks passed!
+Exit code: 0
+> black --check .
+All done! \u2728 \U0001f370 \u2728
+36 files would be left unchanged.
+Exit code: 0
+> mypy config store tests manage.py
+Success: no issues found in 34 source files
+Exit code: 0
+> bandit -r config store manage.py -c pyproject.toml
+[main]	INFO	profile include tests: None
+[main]	INFO	profile exclude tests: None
+[main]	INFO	cli include tests: None
+[main]	INFO	cli exclude tests: None
+[main]	INFO	using config: pyproject.toml
+[main]	INFO	running on Python 3.12.16
+Run started:2026-11-11 14:03:10.969807+00:00
+
+Test results:
+	No issues identified.
+
+Code scanned:
+	Total lines of code: 1272
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 0
+		Medium: 0
+		High: 0
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 0
+		Medium: 0
+		High: 0
+Files skipped (0):
+Exit code: 0
+> pip-audit --cache-dir ../../work/pip-audit-cache
+No known vulnerabilities found
+Exit code: 0
+> pytest -q
+.................................................ss                      [100%]
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.12.16-final-0 _______________
+
+Name                           Stmts   Miss  Cover   Missing
+------------------------------------------------------------
+config\__init__.py                 0      0   100%
+config\celery.py                   6      6     0%   1-8
+config\urls.py                    14      1    93%   33
+store\__init__.py                  0      0   100%
+store\admin.py                    72      0   100%
+store\api.py                      18      0   100%
+store\apps.py                      5      0   100%
+store\forms.py                    19      0   100%
+store\management\__init__.py       0      0   100%
+store\middleware.py               25      0   100%
+store\models.py                   76      0   100%
+store\notifications.py            11      0   100%
+store\services.py                 67      1    99%   69
+store\signals.py                  11      0   100%
+store\sitemaps.py                 11      0   100%
+store\tasks.py                    27      1    96%   34
+store\uploads.py                  33      1    97%   25
+store\views.py                   139      1    99%   183
+------------------------------------------------------------
+TOTAL                            534     11    98%
+Required test coverage of 85% reached. Total coverage: 97.94%
+49 passed, 2 skipped in 5.67s
+Exit code: 0
+> python manage.py makemigrations --check --dry-run
+No changes detected
+> python manage.py check --deploy --fail-level WARNING (production settings, ephemeral secret)
+System check identified no issues (0 silenced).
+> npm run build
+
+> build
+> tailwindcss -i static/src/app.css -o static/app.css --minify && node scripts/copy-htmx.cjs
+
+≈ tailwindcss v4.3.5
+
+Done in 114ms
+npm notice
+npm notice New major version of npm available! 11.19.1 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+> npm audit --audit-level=high
+found 0 vulnerabilities
